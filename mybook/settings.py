@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'myprofile.apps.MyprofileConfig',
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 if DEBUG:
     INSTALLED_APPS += ['django_extensions']
 

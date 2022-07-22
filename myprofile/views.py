@@ -2,7 +2,7 @@ from django.db import transaction
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from .forms import FamilyMemberFormSet
+from .forms import *
 from .models import Profile
 
 
@@ -24,19 +24,26 @@ class ProfileFamilyMemberCreate(CreateView):
         data = super(ProfileFamilyMemberCreate, self).get_context_data(**kwargs)
         if self.request.POST:
             data['familymembers'] = FamilyMemberFormSet(self.request.POST)
+            data['edu'] = EduFormSet(self.request.POST)
         else:
             data['familymembers'] = FamilyMemberFormSet()
+            data['edu'] = EduFormSet()
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         familymembers = context['familymembers']
+        edu = context['edu']
         with transaction.atomic():
             self.object = form.save()
 
             if familymembers.is_valid():
                 familymembers.instance = self.object
                 familymembers.save()
+
+            if edu.is_valid():
+                edu.instance = self.object
+                edu.save()
         return super(ProfileFamilyMemberCreate, self).form_valid(form)
 
 
@@ -55,19 +62,26 @@ class ProfileFamilyMemberUpdate(UpdateView):
         data = super(ProfileFamilyMemberUpdate, self).get_context_data(**kwargs)
         if self.request.POST:
             data['familymembers'] = FamilyMemberFormSet(self.request.POST, instance=self.object)
+            data['edu'] = EduFormSet(self.request.POST, instance=self.object)
         else:
             data['familymembers'] = FamilyMemberFormSet(instance=self.object)
+            data['edu'] = EduFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         familymembers = context['familymembers']
+        edu = context['edu']
         with transaction.atomic():
             self.object = form.save()
 
             if familymembers.is_valid():
                 familymembers.instance = self.object
                 familymembers.save()
+
+            if edu.is_valid():
+                edu.instance = self.object
+                edu.save()
         return super(ProfileFamilyMemberUpdate, self).form_valid(form)
 
 
